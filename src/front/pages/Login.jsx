@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import './Login.css';
+
 const back_URL = import.meta.env.VITE_BACKEND_URL;
 export const Login = () =>{
 
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
-
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -16,7 +18,6 @@ export const Login = () =>{
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
-        credentials: "include", // 🔐 importante para CORS con token
       });
 
       const data = await response.json();

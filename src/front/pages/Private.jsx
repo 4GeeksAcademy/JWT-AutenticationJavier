@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 const back_URL = import.meta.env.VITE_BACKEND_URL;
+import './Private.css';
 
 export const Private = () => {
 
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
-
 
     const logout = () => {
         sessionStorage.removeItem("token");
@@ -26,7 +26,6 @@ export const Private = () => {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      credentials: "include" // 👈 importante para que CORS permita cookies o headers personalizados
     })
       .then(res => {
         if (!res.ok) throw new Error("No autorizado");
@@ -42,10 +41,10 @@ export const Private = () => {
 
   return (
     <div className="private-page">
-      <h1>Private Page</h1>
-      <p>This page is only accessible to authenticated users.</p>
-      <p>{message}</p>
-      <button onClick={logout}>Logout</button>
+      <h1>Pagina personal</h1>
+      <p className="private-message alert alert-success">Si ves este mensaje significa que ya estas autenticado</p>
+      <p className="private-message">{message}</p>
+      <button onClick={logout} className="">Logout</button>
     </div>
   );
 }

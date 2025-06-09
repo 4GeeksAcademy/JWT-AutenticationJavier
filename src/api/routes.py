@@ -1,7 +1,7 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-from flask import Flask, request, jsonify, url_for, Blueprint
+from flask import Flask, request, jsonify, url_for, Blueprint, make_response
 from api.models import db, User
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
@@ -12,7 +12,7 @@ api = Blueprint('api', __name__)
 # Allow CORS requests to this API
 CORS(api)
 
-@api.after_request
+# @api.after_request
 def add_cors_headers(response):
     # Agregar los encabezados necesarios para CORS
     response.headers.add("Access-Control-Allow-Origin", "*")  # O * para permitir todos los orígenes
@@ -38,7 +38,15 @@ def handle_hello():
 
 @api.route('/signup', methods=['POST','OPTIONS'])
 def signup():
-    
+
+    if request.method == 'OPTIONS':
+        # Responder solo con los headers CORS
+        response = make_response()
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+        response.headers.add("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+        return response
+
     data = request.get_json()
     email = data.get("email",None)
     password = data.get("password", None)
@@ -61,14 +69,21 @@ def signup():
 
     return jsonify(new_user.serialize()),201
 
-
-
-
-
-@api.route('/login', methods=['POST'])
+@api.route('/login', methods=['POST','OPTIONS'])
 def login():
-    email = request.json.get("email",None)
-    password = request.json.get("password", None)
+
+    if request.method == 'OPTIONS':
+        # Responder solo con los headers CORS
+        response = make_response()
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+        response.headers.add("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+        return response
+
+
+    data = request.get_json()
+    email = data.get("email",None)
+    password = data.get("password", None)
 
     if not email:
         return jsonify({"msg":"debe agregar el email"}),400
@@ -88,10 +103,20 @@ def login():
     return jsonify({"token":token}),200
 
 # Ruta privada protegida por JWT
-@api.route('/private', methods=['GET'])
+@api.route('/private', methods=['GET','OPTIONS'])
 @jwt_required()
 def private():
+
+
+    if request.method == 'OPTIONS':
+        # Responder solo con los headers CORS
+        response = make_response()
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+        response.headers.add("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+        return response
+
     current_user_email = get_jwt_identity()
     return jsonify({
-        "message": f"Hello {current_user_email}, you are accessing a private route!"
+        "message": f"Bienvenido {current_user_email}, esta es tu pagina privada"
     }), 200
