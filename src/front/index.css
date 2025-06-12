@@ -4,3 +4,9 @@ body{
     align-items: center;
 }
 
+.navbartitle{
+    font-size: 30px;
+    text-align: center;
+    position: relative;
+    left: 100%;
+}

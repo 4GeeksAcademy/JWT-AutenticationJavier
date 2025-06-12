@@ -13,7 +13,7 @@ export const Home = () => {
 			<p>Registrate si no tienes un usuario </p>
 			
 			<Link to="/signup" >
-				<button>r</button>
+				<button>Register</button>
 			</Link>
 			
 
